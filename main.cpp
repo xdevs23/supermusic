@@ -32,10 +32,11 @@ static void playaudl(int c) {
 #define PLAY_MODE 1
 
 static void plaud(int c) {
-  if(PLAY_MODE == 0)
-    playaudl(c);
-  else
-    playaud(c);
+#if PLAY_MODE == 0
+  playaudl(c);
+#else
+  playaud(c);
+#endif
 }
 
 static void plaud_ht(int c, int mult) {
