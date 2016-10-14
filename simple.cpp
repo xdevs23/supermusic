@@ -15,6 +15,7 @@ using namespace std;
 #endif
 
 int smpmult = 1, bitmult = 1;
+
 static void putchar_(int c) {
   fprintf(stderr, "\033[K\r%i", c);
   cerr.flush();
@@ -89,34 +90,7 @@ int main(int argc, char** argv) {
   smpmult = SAMPLE_RATE / 16000;
   bitmult = BIT_DEPTH   /     8;
   fprintf(stderr, "bitmult: %i, smpmult: %i\n", bitmult, smpmult);
-  for (int t=0;t<100*100*100;t++) {
-    if(t < 100*100*25)
-      plaud(
-        (t/4 >> 3) & (t/6 >> 9) * t - 4
-      );
-    /*else if(t < 100*100*15)
-      plaud(
-        (t << 2) & (t/2 >> 7) * t
-      );
-    else if(t < 100*100*20)
-      plaud_ht_dyn(
-        (t/6 >> 4) & (t/2 >> 6) * t/2 - 12
-      , 3);
-    else if(t < 100*100*25)
-      plaud(
-        (t/4 >> 6) & (t/5 >> 12) * t - 8
-      );
-    else if(t < 100*100*30)
-      plaud(
-        (t >> 2) & (t >> 4) + t%100
-      );
-    else if(t < 100*100*35)
-      plaud( t & (t >> 4) & (t/6 >> 4) * t);
-    else if(t < 100*100*40)
-      plaud(t & t*(t >> 8) & (t/3 >> 9) * t/3);
-    else if(t < 100*100*45)
-      plaud(t/2 & (t >> 5) + 16/t - 2^3);
-  */}
-
-  playp(16, 8, 1);
+  for ( int t = 0, t2 = 0;;t += 10, t2++) {
+    plaud((t2 & (t2 >> 8)));
+  }
 }

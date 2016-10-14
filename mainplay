@@ -8,17 +8,25 @@ if [ -z "$SAMPLE_RATE" ]; then
 fi
 
 if [ -z "$BIT_DEPTH" ]; then
-  BIT_DEPTH=8
+  BIT_DEPTH=u8
 fi
 
-CFLAGS="-DSAMPLE_RATE=$SAMPLE_RATE -DBIT_DEPTH=$BIT_DEPTH"
+C_BIT_DEPTH=8
+
+case $BIT_DEPTH in
+  u8) C_BIT_DEPTH=8 ;;
+  float32) C_BIT_DEPTH=32 ;;
+esac
+
+
+CFLAGS="-DSAMPLE_RATE=$SAMPLE_RATE -DBIT_DEPTH=$C_BIT_DEPTH"
 
 g++ main.cpp -o main $CFLAGS
 if [ $? -ne 0 ]; then
   echo "Error while compiling."
   exit $?
 fi
-./main | pacat --format=u$BIT_DEPTH --rate=$SAMPLE_RATE --channels=1 --raw
+./main | pacat --format=$BIT_DEPTH --rate=$SAMPLE_RATE --channels=1 --raw
 
 #sox -r $SAMPLE_RATE -e unsigned -b 8 -c 1 main.raw main.wav
 #play main.wav
