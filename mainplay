@@ -21,13 +21,23 @@ esac
 
 CFLAGS="-DSAMPLE_RATE=$SAMPLE_RATE -DBIT_DEPTH=$C_BIT_DEPTH"
 
-g++ main.cpp -o main $CFLAGS
+if [[ "$@" == *"debug"* ]]; then
+  CFLAGS="$CFLAGS -DSUPERDEBUG"
+fi
+
+echo " strconv.cpp -> strconv.o"
+g++ -c -fpic strconv.cpp $CFLAGS
+echo " strconv.o -> libstrconv.so"
+g++ -shared -o libstrconv.so strconv.o
+echo " main.cpp -> main"
+rm *.o
+g++ main.cpp -L$(pwd) -lstrconv -o main $CFLAGS
 if [ $? -ne 0 ]; then
   echo "Error while compiling."
   exit $?
 fi
 echo "Exec args: $exec_args"
-./main $exec_args | pacat --format=$BIT_DEPTH --rate=$SAMPLE_RATE --channels=1 --raw
+LD_LIBRARY_PATH="$(pwd):$LD_LIBRARY_PATH" ./main $exec_args | pacat --format=$BIT_DEPTH --rate=$SAMPLE_RATE --channels=1 --raw
 
 #sox -r $SAMPLE_RATE -e unsigned -b 8 -c 1 main.raw main.wav
 #play main.wav

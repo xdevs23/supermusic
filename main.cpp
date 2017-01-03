@@ -4,15 +4,16 @@
 #include <cstdlib>
 #include <string>
 #include <cstring>
-#include <algorithm>
 #include <unistd.h>
 #include <cmath>
+
+#include "strconv.h"
 
 using namespace std;
 
 typedef unsigned char byte;
 
-#define SUPERDEBUG
+//#define SUPERDEBUG
 
 #ifndef SAMPLE_RATE
 #define SAMPLE_RATE 48000
@@ -111,82 +112,13 @@ void playexp(int a, int b, int c, int d) {
   }
 }
 
-#ifdef SUPERDEBUG
-#define I_WANT_P
-#endif
-
-#ifdef I_WANT_P
-
 void p(string msg) {
   cerr << msg << "\n";
 }
 
-#endif
-
 #define __INT32_MAX 2147483647
 #define __INT32_MIN -2147483648
 
-/**
- * Convert a string to a number.
- * Returns -1 if string is not representable.
- *
- * strptr: string to convert
- */
-int cstrtoi(char* str) {
-  int number = 0, n;
-  char c;
-  bool istobeneg = false;
-  for (int _i = 0; _i < strlen(str); _i++) {
-    int i = strlen(str) - _i - 1;
-    n = 0;
-    c = str[_i];
-#ifdef SUPERDEBUG
-    cerr << "Converting " << c << " to a number (i " << i << ")" << endl;
-#endif
-    if ( i == 0 ) {
-      switch(c) {
-        case '-': istobeneg = true;
-#ifdef SUPERDEBUG
-          cerr << "Is negative!" << endl;
-#endif
-        default: break;
-      }
-    }
-    switch(c) {
-      case '\0': break;
-      case '0': n = 0; break;
-      case '1': n = 1; break;
-      case '2': n = 2; break;
-      case '3': n = 3; break;
-      case '4': n = 4; break;
-      case '5': n = 5; break;
-      case '6': n = 6; break;
-      case '7': n = 7; break;
-      case '8': n = 8; break;
-      case '9': n = 9; break;
-#ifdef SUPERDEBUG
-      default: p("string not representable"); return -1; break;
-#else
-      default: return -1; break;
-#endif
-    }
-#ifdef SUPERDEBUG
-    cerr << "n is " << n << endl;
-#endif
-
-#ifdef SUPERDEBUG
-    cerr << n << "*" << "(10^" << i << ")" << " = " << n*pow(10,i) << endl;
-#endif
-    if (istobeneg)
-      number -= n*pow(10,i);
-    else
-      number += n*pow(10,i);
-  }
-#ifdef SUPERDEBUG
-  cerr << "Number is " << number << endl;
-#endif
-  return number;
-}
 
 #define argoffset 1
 
